@@ -108,8 +108,10 @@ function setMusicEnabled(enabled){
     }
 }
 function pauseMusic(pause){
-    if(pause) $(song).animate({volume: 0}, 2000);
-    else $(song).animate({volume: volume}, 2000);
+    if(pause){
+        $(song).animate({volume: 0}, 2000);
+        song.currentTime = 0;
+    }else $(song).animate({volume: volume}, 2000);
 }
 $(".app-music").mousedown((e)=>{
     if(musicEnabled)    setMusicEnabled(false);

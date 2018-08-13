@@ -1,0 +1,28 @@
+{
+  "name": "Anti-Automata",
+  "version": "0.0.1",
+  "description": "LD42 game!",
+  "main": "build/index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack"
+  },
+  "author": "Tar van Krieken",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "pixi-layers": "^0.1.9",
+    "pixi-lights": "^2.0.1",
+    "pixi-shadows": "^0.0.2",
+    "pixi.js": "^4.8.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-serve": "^2.0.2"
+  }
+}

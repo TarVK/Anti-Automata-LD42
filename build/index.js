@@ -11074,7 +11074,10 @@ function setMusicEnabled(enabled) {
     }
 }
 function pauseMusic(pause) {
-    if (pause) (0, _jquery2.default)(song).animate({ volume: 0 }, 2000);else (0, _jquery2.default)(song).animate({ volume: volume }, 2000);
+    if (pause) {
+        (0, _jquery2.default)(song).animate({ volume: 0 }, 2000);
+        song.currentTime = 0;
+    } else (0, _jquery2.default)(song).animate({ volume: volume }, 2000);
 }
 (0, _jquery2.default)(".app-music").mousedown(function (e) {
     if (musicEnabled) setMusicEnabled(false);else setMusicEnabled(true);

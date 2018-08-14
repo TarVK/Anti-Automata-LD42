@@ -10703,9 +10703,11 @@ var Cell = function () {
     }, {
         key: "setState",
         value: function setState(state) {
-            this.state = state;
-            var color = this.board.gameRules.colors[state] || "black";
-            this.element.attr("state", state);
+            if (state != this.state) {
+                this.state = state;
+                var color = this.board.gameRules.colors[state] || "black";
+                this.element.attr("state", state);
+            }
 
             // Track the states
             this.states[this.tickNumber] = state;
@@ -10990,18 +10992,18 @@ function start(dontBegin) {
     var s = function s() {
         board = window.board = new _Board2.default(25, 25, _rules2.default); // Window for debugging
         board.getCell(1, 1).setState(0);
-        setTimeout(function () {
-            board.getCell(1, 1).setState(1);
-        });
         board.getCell(1, 23).setState(9);
         board.getCell(23, 1).setState(9);
         board.getCell(23, 23).setState(9);
         setScore(0);
         setMultiplier(1);
-        if (!dontBegin) {
-            board.start();
-            pauseMusic(false);
-        }
+        setTimeout(function () {
+            board.getCell(1, 1).setState(1);
+            if (!dontBegin) {
+                board.start();
+                pauseMusic(false);
+            }
+        });
         setMusicEnabled(musicEnabled);
         (0, _jquery2.default)('body .app-board-container').append(board.element);
     };
@@ -11162,6 +11164,11 @@ if (document.fonts && document.fonts.ready) {
         (0, _jquery2.default)(".app").css("display", "inline-block");
     });
 }
+
+// Disable animations for edge
+if (!!window.StyleMedia) {
+    (0, _jquery2.default)("head").append('\n        <style>\n            .board-cell-inner{\n                transition: none !important;\n            }\n        </style>\n    ');
+}
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
 /***/ }),
@@ -11262,6 +11269,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _jquery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 var _GameRules = __webpack_require__(/*! ./GameRules */ "./src/GameRules.js");
 
 var _GameRules2 = _interopRequireDefault(_GameRules);
@@ -11279,7 +11290,7 @@ var spreadPatternOuter = new _Pattern2.default('\n    ..1..\n    .a.a.\n    1...
 var spreadPattern = new _Pattern2.default('\n    .1.\n    1.1\n    .1.\n');
 exports.default = new _GameRules2.default({
     cellTick: function cellTick(cell, current) {
-        var m = 2 - 1 / (1 + cell.tickNumber / 5000);
+        var m = 2 - 1 / (1 + cell.tickNumber / 10000);
 
         // Movement
         if ([keys.w.isDown, keys.a.isDown, keys.s.isDown, keys.d.isDown].contains(true) == 1) {
@@ -11295,7 +11306,7 @@ exports.default = new _GameRules2.default({
                     if (keys.a.isDown && cell.getNeighbor(-1, 0) != 0) break move;
                     if (keys.d.isDown && cell.getNeighbor(1, 0) != 0) break move;
 
-                    return keys.space.isDown ? 2 : 0;
+                    return keys.space.isDown ? 0 : 2;
                 }
             } else if (current == 0) {
                 if (keys.w.isDown && cell.getNeighbor(0, 1) == 1) return 1;
@@ -11323,21 +11334,21 @@ exports.default = new _GameRules2.default({
             cells = cell.getNeighbors(spreadPattern);
             var outerCells = cell.getNeighbors(spreadPatternOuter);
             if (outerCells.contains(function (state) {
-                return state == -3 || state == -4;
+                return state == -3 | state == -4;
             })) return 0;
             if (outerCells.contains(2) && cells.contains(1)) {
                 global.playSound(global.sounds.pew);
                 return 3;
             }
             if (cells.contains(3) && outerCells.contains(function (state) {
-                return state == 1 || state == 4;
+                return state == 1 | state == 4;
             })) return 3;
         }
 
         // Virus
         if (current == 0) {
             if (Math.random() < spreadChance * m && cells.contains(function (state) {
-                return state >= 5 && state < 10;
+                return state >= 5 & state < 10;
             })) {
                 global.playSound(global.sounds.blop);
                 return 5;
@@ -11353,7 +11364,7 @@ exports.default = new _GameRules2.default({
                 global.playSound(global.sounds.hit);
                 return 10;
             }
-            if ((r < 0.45 || current == 5 && r < 0.65 || current == 6 && r < 0.55) && cells.contains(10)) {
+            if (r < 0.45 | current == 5 & r < 0.65 | current == 6 & r < 0.55 && cells.contains(10)) {
                 global.playSound(global.sounds.hitSpread);
                 return 10;
             }
@@ -11408,11 +11419,12 @@ exports.default = new _GameRules2.default({
     // Character
     "#ff0000",
     // Bullets
-    "#dd3e00", "#ffae00", "#ffc549",
+    "#dd3e00", "#ffcc00", //"#ffae00",
+    "#ffe75f", //"#ffc549",
     // Virus
     "#00ff00", "#00dd00", "#00bb00", "#009900", "#007700",
     // Anti-virus
-    "#dddd00"],
+    "#a8c600"],
     style: '\n        div[state="0"] .board-cell-inner{\n            width: 10;\n            height: 10;\n            margin-top: 4px;\n            border-bottom-width: 0px;\n        }\n        div[state="1"] .board-cell-inner{\n            border-radius: 8px;\n            transition: 0.1s;\n        }\n        div[state="2"] .board-cell-inner,\n        div[state="3"] .board-cell-inner,\n        div[state="4"] .board-cell-inner{\n            border-radius: 12px;\n            width: 20px;\n            height: 20px;\n            transition: 0.1s;\n        }\n        div[state="2"] .board-cell-inner{\n            border-radius: 8px;\n        }\n        div[state="10"] .board-cell-inner{\n            transition: 0.1s;\n        }\n\n        div[state="5"] .board-cell-inner{\n            border-radius: 7px;\n            width: 20px;\n            height: 20px;\n        }\n        div[state="6"] .board-cell-inner{\n            border-radius: 5px;\n            width: 22px;\n            height: 22px;\n        }\n        div[state="7"] .board-cell-inner{\n            border-radius: 3px;\n        }\n    ',
     edgeState: 11,
     clickTransitions: {},

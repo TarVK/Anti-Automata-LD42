@@ -4,7 +4,7 @@
   "description": "LD42 game!",
   "main": "build/index.js",
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack-dev-server --open",
     "build": "webpack"
   },
   "author": "Tar van Krieken",

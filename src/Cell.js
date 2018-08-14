@@ -30,9 +30,11 @@ export default class Cell{
         return this.states[tick!==undefined?tick:this.tickNumber];
     }
     setState(state){
-        this.state = state;
-        const color = this.board.gameRules.colors[state]||"black";
-        this.element.attr("state", state);
+        if(state!=this.state){
+            this.state = state;
+            const color = this.board.gameRules.colors[state]||"black";
+            this.element.attr("state", state);
+        }
 
         // Track the states
         this.states[this.tickNumber] = state;

@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import GameRules from './GameRules';
 import Pattern from './Pattern';
 
@@ -18,7 +20,7 @@ const spreadPattern = new Pattern(`
 `);
 export default new GameRules({
     cellTick: (cell, current)=>{
-        const m = 2 -  1 / (1 + cell.tickNumber/5000);
+        const m = 2 -  1 / (1 + cell.tickNumber/10000);
 
         // Movement
         if([keys.w.isDown, keys.a.isDown, keys.s.isDown, keys.d.isDown].contains(true)==1){
@@ -33,7 +35,7 @@ export default new GameRules({
                     if(keys.a.isDown && cell.getNeighbor(-1, 0)!=0) break move;
                     if(keys.d.isDown && cell.getNeighbor(1, 0)!=0) break move;
 
-                    return keys.space.isDown?2:0;
+                    return keys.space.isDown?0:2;
                 } 
             }else if(current==0){
                 if(keys.w.isDown && cell.getNeighbor(0, 1)==1) return 1;
@@ -59,18 +61,18 @@ export default new GameRules({
         }else if(current==0){
             cells = cell.getNeighbors(spreadPattern);
             const outerCells = cell.getNeighbors(spreadPatternOuter);
-            if(outerCells.contains(state=>state==-3||state==-4)) return 0;
+            if(outerCells.contains(state=>state==-3|state==-4)) return 0;
             if(outerCells.contains(2) && cells.contains(1)){
                 global.playSound(global.sounds.pew);
                 return 3;
             }
-            if(cells.contains(3) && outerCells.contains(state=>state==1||state==4))
+            if(cells.contains(3) && outerCells.contains(state=>state==1|state==4))
                 return 3;
         }
 
         // Virus
         if(current==0){
-            if(Math.random()<spreadChance*m && cells.contains(state=>state>=5&&state<10)){
+            if(Math.random()<spreadChance*m && cells.contains(state=>state>=5&state<10)){
                 global.playSound(global.sounds.blop);
                 return 5;
             }
@@ -83,7 +85,7 @@ export default new GameRules({
                 global.playSound(global.sounds.hit);
                 return 10;
             }
-            if((r<0.45 || (current==5 && r<0.65) || (current==6 && r<0.55)) && cells.contains(10)){
+            if((r<0.45 | (current==5 & r<0.65) | (current==6 & r<0.55)) && cells.contains(10)){
                 global.playSound(global.sounds.hitSpread);
                 return 10;
             }
@@ -133,8 +135,8 @@ export default new GameRules({
         "#ff0000",
         // Bullets
         "#dd3e00",
-        "#ffae00",
-        "#ffc549",
+        "#ffcc00", //"#ffae00",
+        "#ffe75f", //"#ffc549",
         // Virus
         "#00ff00",
         "#00dd00",
@@ -142,7 +144,7 @@ export default new GameRules({
         "#009900",
         "#007700",
         // Anti-virus
-        "#dddd00",
+        "#a8c600",
     ],
     style: `
         div[state="0"] .board-cell-inner{

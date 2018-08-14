@@ -20,19 +20,19 @@ let board;
 function start(dontBegin){
     const s = ()=>{
         board = window.board = new Board(25, 25, rules); // Window for debugging
-        board.getCell(1, 1).setState(0)
-        setTimeout(()=>{
-            board.getCell(1, 1).setState(1);
-        });
+        board.getCell(1, 1).setState(0);
         board.getCell(1, 23).setState(9);
         board.getCell(23, 1).setState(9);
         board.getCell(23, 23).setState(9);
         setScore(0);
         setMultiplier(1);
-        if(!dontBegin){
-            board.start();
-            pauseMusic(false);
-        } 
+        setTimeout(()=>{
+            board.getCell(1, 1).setState(1);
+            if(!dontBegin){
+                board.start();
+                pauseMusic(false);
+            } 
+        });
         setMusicEnabled(musicEnabled);
         $('body .app-board-container').append(board.element);
     }
@@ -199,4 +199,15 @@ if(document.fonts && document.fonts.ready){
     $(document).ready(()=>{
         $(".app").css("display", "inline-block");
     });
+}
+
+// Disable animations for edge
+if(!!window.StyleMedia){
+    $("head").append(`
+        <style>
+            .board-cell-inner{
+                transition: none !important;
+            }
+        </style>
+    `)
 }

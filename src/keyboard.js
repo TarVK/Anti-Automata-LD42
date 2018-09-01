@@ -1,34 +1,40 @@
 // Source: https://github.com/kittykatattack/learningPixi
 // Was too lazy to write this myself
-export default function handleKey(keyCode){
-    if(arguments.length>1){
+export default function handleKey(keyCode) {
+    if (arguments.length > 1) {
         let keys = {
             keys: [],
-            get isDown(){
-                for(let i=0; i<this.keys.length; i++)
-                    if(this.keys[i].isDown) return true;
+            set isDown(down) {
+                this.keys[0].isDown = down;
+            },
+            set isUp(up) {
+                this.keys[0].isUp = up;
+            },
+            get isDown() {
+                for (let i = 0; i < this.keys.length; i++)
+                    if (this.keys[i].isDown) return true;
                 return false;
             },
-            get isUp(){
-                for(let i=0; i<this.keys.length; i++)
-                    if(this.keys[i].isUp) return true;
+            get isUp() {
+                for (let i = 0; i < this.keys.length; i++)
+                    if (this.keys[i].isUp) return true;
                 return false;
             },
-            set press(press){
-                for(let i=0; i<this.keys.length; i++)
+            set press(press) {
+                for (let i = 0; i < this.keys.length; i++)
                     this.keys[i].press = press;
             },
-            set release(press){
-                for(let i=0; i<this.keys.length; i++)
+            set release(press) {
+                for (let i = 0; i < this.keys.length; i++)
                     this.keys[i].release = release;
             }
         };
-        for(let i=0; i<arguments.length; i++){
+        for (let i = 0; i < arguments.length; i++) {
             const key = arguments[i];
             keys.keys.push(handleKey(key));
         }
         return keys;
-    }else{
+    } else {
         let key = {};
         key.code = keyCode;
         key.isDown = false;
@@ -44,7 +50,7 @@ export default function handleKey(keyCode){
                 event.preventDefault();
             }
         };
-      
+
         //The `upHandler`
         key.upHandler = event => {
             if (event.keyCode === key.code) {
@@ -54,14 +60,10 @@ export default function handleKey(keyCode){
                 event.preventDefault();
             }
         };
-      
+
         //Attach event listeners
-        window.addEventListener(
-            "keydown", key.downHandler.bind(key), false
-        );
-        window.addEventListener(
-            "keyup", key.upHandler.bind(key), false
-        );
+        window.addEventListener("keydown", key.downHandler.bind(key), false);
+        window.addEventListener("keyup", key.upHandler.bind(key), false);
         return key;
     }
 }
